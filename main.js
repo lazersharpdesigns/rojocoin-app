@@ -1,60 +1,32 @@
-const SHA256 = require("crypto-js/sha256");
+const { BlockChain, Transaction } = require("./blockchain");
+const EC = require("elliptic").ec;
+const ec = new EC("secp256k1");
 
-class Block {
-  constructor(index, timestamp, data, previousHash = "") {
-    this.index = index;
-    this.previousHash = previousHash;
-    this.timestamp = timestamp;
-    this.data = data;
-    this.hash = this.calculateHash();
-  }
+const myKey = ec.keyFromPrivate(
+  "c3a3165c640953e7db71a2ac39d0697274d215331009bbf57f6753210866cb41"
+);
 
-  calculateHash() {
-    return SHA256(
-      this.index +
-        this.previousHash +
-        this.timestamp +
-        JSON.stringify(this.data)
-    ).toString();
-  }
-}
+const myWalletAddress = myKey.getPublic("hex");
 
-class BlockChain {
-  constructor() {
-    this.chain = [this.createGenesisBlock()];
-  }
+let rojoCoin = new BlockChain();
 
-  createGenesisBlock() {
-    return new Block(0, new Date().getTime(), "Genesis Block", "0");
-  }
+rojoCoin.minePendingTransactions(myWalletAddress);
 
-  getLatestBlock() {
-    return this.chain[this.chain.length - 1];
-  }
+const tx1 = new Transaction(myWalletAddress, "public_key_goes_here", 10);
+tx1.signTransaction(myKey);
 
-  addBlock(newBlock) {
-    newBlock.previousHash = this.getLatestBlock().hash;
-    newBlock.hash = newBlock.calculateHash();
-    this.chain.push(newBlock);
-  }
+rojoCoin.addTransaction(tx1);
 
-  isChainValid() {
-    for (let i = 1; i < this.chain.length; i++) {
-      const previousBlock = this.chain[i - 1];
-      const currentBlock = this.chain[i];
+console.log("\n Starting the miner...");
+rojoCoin.minePendingTransactions(myWalletAddress);
 
-      if (currentBlock.hash !== currentBlock.calculateHash()) {
-        return false;
-      }
+console.log(
+  "\n Balance of Rohan is",
+  rojoCoin.getBalanceOfAddress(myWalletAddress)
+);
 
-      if (currentBlock.previousHash !== previousBlock.hash) {
-        return false;
-      }
-    }
-    return true;
-  }
-}
+console.log("Is Chain Valid:", rojoCoin.isChainValid());
 
-let RojoChain = new BlockChain();
-RojoChain.addBlock(new Block(1, new Date().getTime(), { amount: 3 }));
-RojoChain.addBlock(new Block(2, new Date().getTime(), { amount: 8 }));
+rojoCoin.chain[1].transactions[0].amount = 1;
+
+console.log("Is Chain Valid:", rojoCoin.isChainValid());
