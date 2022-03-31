@@ -1,21 +1,21 @@
 import React from 'react';
 import { ChakraProvider, theme } from '@chakra-ui/react';
-import Navbar from './components/navbar';
-import Footer from './components/footer';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Home from './pages/home';
+import Navbar from './components/navbar';
+import Footer from './components/footer';
 
 function App() {
   return (
     <ChakraProvider theme={theme}>
+      <Navbar />
       <BrowserRouter>
-        <Navbar />
         <Routes>
-          <Route index element={Home} />
-          <Route path="*" element={Home} />
+          <Route index element={<Home />} />
+          <Route path="*" element={<Home />} />
         </Routes>
-        <Footer />
       </BrowserRouter>
+      <Footer />
     </ChakraProvider>
   );
 }

@@ -1,7 +1,8 @@
 import React from 'react';
+import PageContainer from '../components/page-container';
 
-function Home(props) {
-  return <div style={{ height: '100vh' }}>Home page</div>;
+function Home() {
+  return <PageContainer>Home Page</PageContainer>;
 }
 
 export default Home;
