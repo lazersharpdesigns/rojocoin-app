@@ -12,15 +12,13 @@ import {
   useDisclosure,
 } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
-import { Transaction } from 'rojocoin/blockchain';
 import { useWallet } from '../context/wallet';
 
-export default function CreateTx({ children, onTransaction }) {
+export default function CreateTx({ children }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const wallet = useWallet();
 
   const [tx, setTx] = useState({
-    from: wallet.key,
     to: '',
     amount: '',
   });
@@ -30,12 +28,10 @@ export default function CreateTx({ children, onTransaction }) {
       ...tx,
       from: wallet.key,
     });
-  }, [wallet.key]);
+  }, [wallet.key, tx]);
 
   const createTx = () => {
-    const tx1 = new Transaction(wallet.key, tx.to, tx.amount);
-    tx1.signTransaction(wallet.myKey);
-    onTransaction(tx1);
+    wallet.onTransaction(tx.to, tx.amount);
     onClose();
   };
 
@@ -54,7 +50,7 @@ export default function CreateTx({ children, onTransaction }) {
             </Text>
             <Input
               disabled
-              value={tx.from}
+              value={wallet.key}
               onChange={({ target: { value } }) =>
                 setTx({ ...tx, from: value })
               }

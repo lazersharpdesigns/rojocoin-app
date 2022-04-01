@@ -2,33 +2,22 @@ import {
   Box,
   Flex,
   Text,
-  IconButton,
   Button,
   Stack,
-  Collapse,
-  Icon,
-  Link,
-  Popover,
-  PopoverTrigger,
-  PopoverContent,
   useColorModeValue,
   useBreakpointValue,
-  useDisclosure,
   Heading,
 } from '@chakra-ui/react';
-import {
-  HamburgerIcon,
-  CloseIcon,
-  ChevronDownIcon,
-  ChevronRightIcon,
-} from '@chakra-ui/icons';
+
 import { useWallet } from '../context/wallet';
 import CreateTx from './create-tx-modal';
 import { useNavigate } from 'react-router-dom';
+import { useBlockChain } from '../context/blockchain';
 
-export default function Navbar({ onTransaction, balance }) {
+export default function Navbar({ onTransaction }) {
   const router = useNavigate();
   const wallet = useWallet();
+  const { getBalance } = useBlockChain();
 
   return (
     <Box>
@@ -71,7 +60,7 @@ export default function Navbar({ onTransaction, balance }) {
           alignItems="center"
           spacing={2}
         >
-          <Text width={'max-content'}>Balance: {balance()}</Text>
+          <Text width={'max-content'}>Balance: {getBalance(wallet.key)}</Text>
           {wallet.key && (
             <Button
               display={{ base: 'inline-flex' }}
@@ -92,21 +81,36 @@ export default function Navbar({ onTransaction, balance }) {
             </Button>
           )}
           {wallet.key ? (
-            <CreateTx onTransaction={onTransaction}>
+            <>
               <Button
                 display={{ base: 'inline-flex' }}
                 fontSize={'sm'}
                 fontWeight={600}
-                color={'white'}
-                bg={'blue.400'}
+                variant="ghost"
+                onClick={() => wallet.reset()}
                 href={'#'}
                 _hover={{
                   bg: 'blue.300',
                 }}
               >
-                Create Transaction
+                Reset
               </Button>
-            </CreateTx>
+              <CreateTx onTransaction={onTransaction}>
+                <Button
+                  display={{ base: 'inline-flex' }}
+                  fontSize={'sm'}
+                  fontWeight={600}
+                  color={'white'}
+                  bg={'blue.400'}
+                  href={'#'}
+                  _hover={{
+                    bg: 'blue.300',
+                  }}
+                >
+                  Create Transaction
+                </Button>
+              </CreateTx>
+            </>
           ) : (
             <Button
               display={{ base: 'inline-flex' }}

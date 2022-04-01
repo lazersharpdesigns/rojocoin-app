@@ -1,40 +1,21 @@
 import { Box, Heading, Stack, Text } from '@chakra-ui/react';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import PageContainer from '../components/page-container';
-import { BlockChain } from 'rojocoin/blockchain';
 import BlockCard from '../components/block-card';
-import { useWallet } from '../context/wallet';
 import TxTable from '../components/tx-table';
+import { useBlockChain } from '../context/blockchain';
 
 function Home() {
-  const [blocks, setBlocks] = useState([]);
-
-  const wallet = useWallet();
+  const { bc: rojoCoin } = useBlockChain();
   const [selectedBlock, setSelectedBlock] = useState({
     index: 1,
     transactions: [],
   });
-  const rojoCoin = new BlockChain();
 
-  const getBalance = useCallback(() => {
-    return rojoCoin.getBalanceOfAddress(wallet.key);
-  }, [rojoCoin.getBalanceOfAddress(wallet.key), wallet.key]);
-
-  const onTransaction = tx => {
-    rojoCoin.addTransaction(tx);
-    rojoCoin.minePendingTransactions(wallet.key);
-    setBlocks(rojoCoin.chain);
-  };
-
-  useEffect(() => {
-    if (rojoCoin.chain.length == 1) {
-      rojoCoin.minePendingTransactions(wallet.key);
-      setBlocks(rojoCoin.chain);
-    }
-  }, [wallet.key]);
+  console.log(rojoCoin.chain);
 
   return (
-    <PageContainer onTransaction={onTransaction} balance={getBalance}>
+    <PageContainer>
       <Box pb={8} pt={2}>
         <Heading>Blocks on chain</Heading>
         <Text size={'md'}>
@@ -46,9 +27,11 @@ function Home() {
           mt={8}
           direction={{ base: 'column', md: 'row' }}
           justifyItems={'center'}
+          alignItems="center"
           spacing={2}
+          overflowY="scroll"
         >
-          {blocks.map((item, index) => {
+          {rojoCoin.chain.map((item, index) => {
             return (
               <BlockCard
                 onSelect={b => setSelectedBlock(b)}

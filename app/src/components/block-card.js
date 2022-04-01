@@ -5,7 +5,8 @@ import { Box, Heading, Text } from '@chakra-ui/react';
 export default function BlockCard({ block, selected, onSelect }) {
   return (
     <Box
-      width={{ base: '90%', md: '50%', lg: '33.3%' }}
+      key={block.hash}
+      minW={{ base: '90%', md: '33.3%', lg: '25%' }}
       onClick={() => onSelect(block)}
       _hover={{
         cursor: 'pointer',
@@ -20,7 +21,7 @@ export default function BlockCard({ block, selected, onSelect }) {
         <Heading display={'flex'} size={'lg'}>
           <Text>Block {block.index} </Text>
           <Text fontWeight={400} size={'md'}>
-            {block.previousHash == 0 ? '(Genesis block)' : ''}
+            {block.previousHash === 0 ? '(Genesis block)' : ''}
           </Text>
         </Heading>
       </Box>

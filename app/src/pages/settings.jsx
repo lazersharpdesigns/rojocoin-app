@@ -1,29 +1,26 @@
 import { Box, Button, Heading, Input, Text, useToast } from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react';
 import PageContainer from '../components/page-container';
-import { useWallet } from '../context/wallet';
+import { useBlockChain } from '../context/blockchain';
 
 function Settings() {
-  const wallet = useWallet();
+  const { bc, updateSettings: update } = useBlockChain();
   const toast = useToast();
 
   const [settings, setSettings] = useState({
-    difficulty: wallet.difficulty,
-    reward: wallet.reward,
+    difficulty: bc.difficulty,
+    reward: bc.miningReward,
   });
 
   useEffect(() => {
     setSettings({
-      difficulty: wallet.difficulty,
-      reward: wallet.reward,
+      difficulty: bc.difficulty,
+      reward: bc.miningReward,
     });
-  }, [wallet.difficulty, wallet.reward]);
+  }, [bc.difficulty, bc.miningReward]);
 
   const updateSettings = () => {
-    wallet.updateSettings(
-      parseInt(settings.difficulty),
-      parseInt(settings.reward)
-    );
+    update(parseInt(settings.difficulty), parseInt(settings.reward));
     toast({
       title: 'Settings Updated.',
       description: 'You are set to go!',
