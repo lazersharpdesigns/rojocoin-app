@@ -7,8 +7,7 @@ import {
   useColorModeValue,
   VisuallyHidden,
 } from '@chakra-ui/react';
-import { FaInstagram, FaTwitter, FaYoutube } from 'react-icons/fa';
-import { ReactNode } from 'react';
+import { FaGithub } from 'react-icons/fa';
 
 const SocialButton = ({ children, label, href }) => {
   return (
@@ -49,16 +48,15 @@ export default function Footer() {
         justify={{ base: 'center', md: 'space-between' }}
         align={{ base: 'center', md: 'center' }}
       >
-        <Text>© 2020 Chakra Templates. All rights reserved</Text>
+        <Text>
+          © {new Date().getFullYear()} Lazersharp Designs. All rights reserved
+        </Text>
         <Stack direction={'row'} spacing={6}>
-          <SocialButton label={'Twitter'} href={'#'}>
-            <FaTwitter />
-          </SocialButton>
-          <SocialButton label={'YouTube'} href={'#'}>
-            <FaYoutube />
-          </SocialButton>
-          <SocialButton label={'Instagram'} href={'#'}>
-            <FaInstagram />
+          <SocialButton
+            label={'Github'}
+            href={'https://github.com/lazersharpdesigns/rojocoin-app'}
+          >
+            <FaGithub />
           </SocialButton>
         </Stack>
       </Container>
